@@ -53,6 +53,7 @@
 
         // Closed Shadow DOM Element
         class ClosedShadowElement extends HTMLElement {
+
             constructor() {
                 super();
                 const shadow = this.attachShadow({mode: 'closed'});
@@ -64,10 +65,14 @@
                     <p>This is inside a closed shadow DOM</p>
                     <button id="closedButton">Click me (Closed)</button>
                 `;
+
+               /** shadow.getElementById('closedButton').addEventListener('click', () => {
+                    alert('Button in closed shadow DOM clicked!');
+                });**/
             }
 
             connectedCallback() {
-                this.openButton = this.shadowRoot.getElementById('closedButton');
+                this.openButton = this.shadowRoot.getElementById('openButton');
                 this.openButton.addEventListener('click', this.handleButtonClick);
             }
 
