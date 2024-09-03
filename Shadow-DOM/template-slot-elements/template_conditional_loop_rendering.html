@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Template Element with Conditional Rendering</title>
+    <style>
+        .user-card {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 10px;
+            display: inline-block;
+        }
+        .premium-user {
+            background-color: #ffd700;
+        }
+        .standard-user {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Template Element with Conditional Rendering</h1>
+
+    <!-- Template definition -->
+    <template id="user-card-template">
+        <div class="user-card">
+            <h2 class="name"></h2>
+            <p class="email"></p>
+            <p class="status"></p>
+        </div>
+    </template>
+
+    <div id="card-container"></div>
+
+    <script>
+        // User data with different statuses
+        const users = [
+            { name: 'John Doe', email: 'john@example.com', isPremium: true },
+            { name: 'Jane Smith', email: 'jane@example.com', isPremium: false },
+            { name: 'Alice Johnson', email: 'alice@example.com', isPremium: true }
+        ];
+
+        // Function to create a user card with conditional rendering
+        function createUserCard(user) {
+            const template = document.getElementById('user-card-template');
+            const cardNode = template.content.cloneNode(true);
+
+            const card = cardNode.querySelector('.user-card');
+            card.classList.add(user.isPremium ? 'premium-user' : 'standard-user');
+
+            cardNode.querySelector('.name').textContent = user.name;
+            cardNode.querySelector('.email').textContent = user.email;
+
+            // Conditional rendering of status
+            const statusElement = cardNode.querySelector('.status');
+            if (user.isPremium) {
+                statusElement.textContent = 'Premium User';
+                statusElement.style.color = 'gold';
+                
+                // Conditionally add a premium badge
+                const badgeElement = document.createElement('span');
+                badgeElement.textContent = '⭐';
+                badgeElement.title = 'Premium User';
+                card.insertBefore(badgeElement, card.firstChild);
+            } else {
+                statusElement.textContent = 'Standard User';
+                statusElement.style.color = 'gray';
+            }
+
+            return cardNode;
+        }
+
+        // Render user cards
+        const container = document.getElementById('card-container');
+        users.forEach(user => {
+            const card = createUserCard(user);
+            container.appendChild(card);
+        });
+
+        /*
+        This example demonstrates the use of the <template> element with conditional rendering:
+
+        1. We define a template for a user card in HTML using <template>.
+        2. The template provides a basic structure for all user cards.
+        3. We use JavaScript to clone the template content for each user.
+        4. We apply conditional logic when populating the cloned content:
+           - The card's class is set based on the user's premium status.
+           - The status text and color are set conditionally.
+           - A premium badge is added only for premium users.
+        5. This approach allows for dynamic content creation with variations based on data.
+
+        Key points:
+        - The <template> element provides a flexible base structure.
+        - Conditional logic in JavaScript allows for dynamic customization of each instance.
+        - We can add, modify, or style elements based on data conditions.
+        - This method combines the benefits of HTML templating with the power of JavaScript conditionals.
+        */
+    </script>
+</body>
+</html>

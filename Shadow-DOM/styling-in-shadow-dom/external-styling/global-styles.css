@@ -1,0 +1,15 @@
+.card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    max-width: 300px;
+}
+.card-title {
+    background-color: #0066cc;
+    color: white;
+    margin: 0;
+    padding: 10px;
+}
+.card-content {
+    padding: 10px;
+}

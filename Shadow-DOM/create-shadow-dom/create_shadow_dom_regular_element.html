@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Creating Shadow DOM for a Regular Element</title>
+    <style>
+        /* Global styles - these should not affect the shadow DOM content */
+        .content {
+            color: red;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Creating Shadow DOM for a Regular Element</h1>
+
+    <!-- This is our regular element that will host the shadow DOM -->
+    <div id="host" class="content">
+        This text will be replaced by shadow DOM content.
+    </div>
+
+    <!-- This element demonstrates that global styles don't affect shadow DOM -->
+    <div class="content">
+        This text is styled by global CSS.
+    </div>
+
+    <script>
+        // Step 1: Select the host element
+        const host = document.getElementById('host');
+        
+        // Step 2: Create a shadow root
+        const shadowRoot = host.attachShadow({mode: 'open'});
+        
+        // Step 3: Create elements to be placed in the shadow DOM
+        const paragraph = document.createElement('p');
+        paragraph.textContent = 'This paragraph is inside the shadow DOM.';
+        paragraph.className = 'content';  // This class won't be affected by global styles
+        
+        const button = document.createElement('button');
+        button.textContent = 'Shadow DOM Button';
+        
+        // Step 4: Create styles for the shadow DOM
+        const style = document.createElement('style');
+        style.textContent = `
+            .content {
+                color: blue;
+                font-size: 16px;
+            }
+            button {
+                background-color: green;
+                color: white;
+                border: none;
+                padding: 5px 10px;
+                margin-top: 10px;
+            }
+        `;
+        
+        // Step 5: Add event listener to the button
+        button.addEventListener('click', () => {
+            alert('Button in shadow DOM clicked!');
+        });
+        
+        // Step 6: Append elements to the shadow root
+        shadowRoot.appendChild(style);
+        shadowRoot.appendChild(paragraph);
+        shadowRoot.appendChild(button);
+        
+        console.log('Shadow DOM created for the regular element');
+
+        /*
+        This example demonstrates creating a shadow DOM for a regular HTML element:
+
+        1. We select an existing element from the DOM to act as the shadow host.
+        2. We create a shadow root for this element using attachShadow().
+        3. We create new elements to be placed inside the shadow DOM.
+        4. We define styles that will only apply within the shadow DOM.
+        5. We set up interactivity (button click event) within the shadow DOM.
+        6. We append all created elements to the shadow root.
+
+        Key points:
+        - The shadow DOM content replaces the original content of the host element.
+        - Styles defined inside the shadow DOM don't leak out to the main document.
+        - Global styles (like the red color defined for .content) don't affect elements inside the shadow DOM.
+        - The shadow DOM provides encapsulation for both styling and functionality.
+        */
+    </script>
+</body>
+</html>

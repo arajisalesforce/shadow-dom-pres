@@ -1,0 +1,60 @@
+<!-- File name: web_component_style_property.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Web Component - StyleProperty Example</title>
+</head>
+<body>
+    <h1>Web Component - StyleProperty Example</h1>
+
+    <color-changer></color-changer>
+
+    <script>
+        class ColorChanger extends HTMLElement {
+            constructor() {
+                super();
+                this.attachShadow({ mode: 'open' });
+                this.shadowRoot.innerHTML = `
+                    <div>
+                        <button id="changeColor">Change Color</button>
+                        <div id="colorBox" style="width: 100px; height: 100px; margin-top: 10px;"></div>
+                    </div>
+                `;
+                this.colorBox = this.shadowRoot.getElementById('colorBox');
+                this.button = this.shadowRoot.getElementById('changeColor');
+                this.button.addEventListener('click', () => this.changeColor());
+                this.changeColor(); // Set initial color
+            }
+
+            changeColor() {
+                const randomColor = Math.floor(Math.random()*16777215).toString(16);
+                this.colorBox.style.backgroundColor = "#" + randomColor;
+            }
+        }
+
+        customElements.define('color-changer', ColorChanger);
+
+        /*
+        This example demonstrates the use of StyleProperty in a Web Component:
+
+        1. Programmatic Styling:
+           - Styles are set using JavaScript (this.colorBox.style.backgroundColor)
+           - This allows for dynamic style changes based on user interactions or component state
+
+        2. Event-Driven Styling:
+           - The color changes in response to a button click event
+
+        3. Initial Styling:
+           - The changeColor method is called in the constructor to set an initial random color
+
+        Key Points:
+        - StyleProperty is powerful for dynamic, state-based styling
+        - It's useful when styles need to change after the component has been rendered
+        - This approach allows for complex logic in style application
+        - It's particularly useful for interactive components or those with changing states
+        */
+    </script>
+</body>
+</html>

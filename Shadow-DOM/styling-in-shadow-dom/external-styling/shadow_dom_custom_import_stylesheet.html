@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Shadow DOM - Custom Import Global Stylesheet Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+        }
+    </style>
+    <!-- Global stylesheet to be imported into Shadow DOM -->
+    <link rel="stylesheet" href="global-styles.css">
+</head>
+<body>
+    <h1>Shadow DOM - Custom Import Global Stylesheet Example</h1>
+
+    <custom-card>
+        <h2 slot="title">My Custom Card</h2>
+        <p slot="content">This is the content of my custom card.</p>
+    </custom-card>
+
+    <script>
+        class CustomCard extends HTMLElement {
+            constructor() {
+                super();
+                const shadow = this.attachShadow({mode: 'open'});
+                
+                // Import the global stylesheet
+                const linkElem = document.createElement('link');
+                linkElem.setAttribute('rel', 'stylesheet');
+                linkElem.setAttribute('href', 'global-styles.css');
+                
+                shadow.appendChild(linkElem);
+
+                shadow.innerHTML += `
+                    <div class="card">
+                        <h2 class="card-title">
+                            <slot name="title"></slot>
+                        </h2>
+                        <div class="card-content">
+                            <slot name="content"></slot>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        customElements.define('custom-card', CustomCard);
+
+        /*
+        This example demonstrates importing a global stylesheet into Shadow DOM:
+
+        1. Global Stylesheet:
+           - Defined externally in 'global-styles.css'
+           - Contains styles for .card, .card-title, and .card-content classes
+
+        2. Importing the Stylesheet:
+           - A <link> element is created and appended to the shadow root
+           - This imports the entire global stylesheet into the shadow DOM
+
+        3. Using Global Styles in Shadow DOM:
+           - The card structure in the shadow DOM uses classes defined in the global stylesheet
+           - These styles are applied within the shadow DOM, not affecting other elements
+
+        4. Maintaining Structure:
+           - The structure of the component is still defined within the Shadow DOM
+           - Styles are imported from the global stylesheet
+
+        Key Points:
+        - This method allows for complete sharing of styles between light and shadow DOM
+        - It's useful for ensuring consistency across components
+        - Be cautious with this approach, as it can potentially break the encapsulation of shadow DOM
+        - This technique is powerful but should be used judiciously to maintain the benefits of shadow DOM
+        */
+    </script>
+</body>
+</html>

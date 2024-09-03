@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JavaScript Interference</title>
+    <style>
+        /* Some basic styling for clarity */
+        body { font-family: Arial, sans-serif; line-height: 1.6; }
+        .widget { border: 1px solid #ddd; padding: 10px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>JavaScript Interference</h1>
+
+    <!-- Global counter -->
+    <div class="widget">
+        <h2>Global Counter</h2>
+        <p>Count: <span id="globalCount">0</span></p>
+        <button onclick="incrementCounter()">Increment Global</button>
+    </div>
+
+    <!-- Our custom web component -->
+    <user-profile-widget></user-profile-widget>
+
+    <script>
+        // Global variables and functions
+        let globalCount = 0;
+        function incrementCounter() {
+            globalCount++;
+            updateCountDisplay();
+        }
+        function updateCountDisplay() {
+            document.getElementById('globalCount').textContent = globalCount;
+        }
+
+        // Custom element definition
+        class UserProfileWidget extends HTMLElement {
+            constructor() {
+                super();
+                this.count = 0;
+                this.render();
+                this.querySelector('button').addEventListener('click', () => this.incrementCounter());
+            }
+
+
+
+            render() {
+                this.innerHTML = `
+                    <div class="widget">
+                        <h2>User Profile</h2>
+                        <p>Likes: <span id="likeCount">${this.count}</span></p>
+                        <button >Like</button>
+                    </div>
+                `;
+            }
+
+            // This method is intended to be an internal method for the component
+            incrementCounter() {
+                this.count++;
+                this.updateDisplay();
+            }
+
+            updateDisplay() {
+                this.querySelector('#likeCount').textContent = this.count;
+            }
+        }
+
+        customElements.define('user-profile-widget', UserProfileWidget);
+
+        /*
+        Problem Demonstration:
+        1. The global counter works as expected, incrementing when its button is clicked.
+        2. The "Like" button in the UserProfileWidget calls the global incrementCounter()
+           function instead of its own internal method.
+        3. Clicking the "Like" button increments the global counter instead of the component's
+           like count.
+        4. The component's internal incrementCounter() method is never called, and its
+           like count never increases.
+
+        This demonstrates how without proper encapsulation (like Shadow DOM):
+        - Global functions can override or interfere with component methods.
+        - Components can unintentionally affect or be affected by global state.
+        - It's difficult to maintain component-specific functionality and state.
+
+        Using Shadow DOM would prevent this by:
+        - Encapsulating the component's DOM, preventing global querySelector from accessing it.
+        - Isolating event listeners, ensuring they call the correct methods.
+        - Protecting the component's internal methods from global namespace collisions.
+        */
+    </script>
+</body>
+</html>

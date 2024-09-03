@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Shadow DOM - Custom Properties Example</title>
+    <style>
+        :root {
+            --main-bg-color: #f0f0f0;
+            --main-text-color: #333;
+            --main-font-size: 16px;
+            --main-padding: 20px;
+            --main-border: 1px solid #999;
+        }
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            background-color: var(--main-bg-color);
+            color: var(--main-text-color);
+            padding: var(--main-padding);
+        }
+    </style>
+</head>
+<body>
+    <h1>Shadow DOM - Custom Properties Example</h1>
+
+    <div class="container">
+        <p>This is in the light DOM.</p>
+        <custom-element></custom-element>
+    </div>
+
+    <script>
+        class CustomElement extends HTMLElement {
+            constructor() {
+                super();
+                const shadow = this.attachShadow({mode: 'open'});
+                shadow.innerHTML = `
+                    <style>
+                        .shadow-content {
+                            background-color: var(--main-bg-color, white);
+                            color: var(--main-text-color, black);
+                            font-size: var(--main-font-size, 14px);
+                            padding: var(--main-padding, 10px);
+                            border: var(--main-border, 1px solid black);
+                        }
+                        .custom-bg {
+                            background-color: var(--custom-bg-color, lightblue);
+                        }
+                    </style>
+                    <div class="shadow-content">
+                        <p>This is inside the shadow DOM using custom properties.</p>
+                        <p class="custom-bg">This has a custom background color.</p>
+                    </div>
+                `;
+            }
+        }
+
+        customElements.define('custom-element', CustomElement);
+
+        /*
+        This example demonstrates custom properties in Shadow DOM:
+
+        1. Global Custom Properties:
+           - Defined in :root and available throughout the document, including shadow DOM
+           - Examples: --main-bg-color, --main-text-color, --main-font-size, etc.
+
+        2. Usage in Light DOM:
+           - The .container class uses these custom properties
+
+        3. Usage in Shadow DOM:
+           - The .shadow-content class uses the same custom properties
+           - Fallback values are provided (e.g., white, black, 14px) in case the property is not defined
+
+        4. Shadow-specific Custom Property:
+           - --custom-bg-color is used within the shadow DOM but not defined globally
+           - This allows for easy customization from outside if needed
+
+        Key Points:
+        - Custom properties defined on :root are accessible in both light and shadow DOM
+        - They provide a way to create consistent styling across the entire document
+        - Fallback values ensure the component works even if custom properties are not defined
+        - Shadow-specific properties can be defined for additional customization
+        - This approach offers more control than inherited styles while maintaining encapsulation
+        */
+    </script>
+</body>
+</html>

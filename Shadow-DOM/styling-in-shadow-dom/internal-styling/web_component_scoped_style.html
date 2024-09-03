@@ -1,0 +1,74 @@
+<!-- File name: web_component_scoped_style.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Web Component - Scoped Style Tag Example</title>
+    <style>
+        /* Global styles */
+        .card {
+            border: 1px solid black;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Web Component - Scoped Style Tag Example</h1>
+
+    <div class="card">This is a regular div with global styles</div>
+    <br>
+    <custom-card></custom-card>
+
+    <script>
+        class CustomCard extends HTMLElement {
+            constructor() {
+                super();
+                this.attachShadow({ mode: 'open' });
+                this.shadowRoot.innerHTML = `
+                    <style>
+                        /* Scoped styles */
+                        .card {
+                            border: 2px solid blue;
+                            border-radius: 8px;
+                            padding: 15px;
+                            background-color: #f0f0f0;
+                            font-family: Arial, sans-serif;
+                        }
+                        .title {
+                            color: blue;
+                            margin-top: 0;
+                        }
+                    </style>
+                    <div class="card">
+                        <h2 class="title">Custom Card Title</h2>
+                        <p>This is content inside the custom card component.</p>
+                    </div>
+                `;
+            }
+        }
+
+        customElements.define('custom-card', CustomCard);
+
+        /*
+        This example demonstrates the use of scoped styles in a Web Component:
+
+        1. Scoped Styles:
+           - Styles are defined within the shadow DOM of the component
+           - These styles only apply to elements within this component
+
+        2. Style Encapsulation:
+           - The .card style in the component doesn't affect the global .card style
+           - The component's styles don't leak out to affect other elements on the page
+
+        3. Shadow DOM:
+           - The component uses Shadow DOM (this.attachShadow) to create a scoped subtree
+
+        Key Points:
+        - Scoped styles provide strong encapsulation of styles within the component
+        - This approach prevents style conflicts between the component and the rest of the page
+        - It allows for more maintainable and modular code
+        */
+    </script>
+</body>
+</html>

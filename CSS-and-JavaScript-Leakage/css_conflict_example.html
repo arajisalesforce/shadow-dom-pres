@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CSS Leakage with Real Web Component</title>
+    <style>
+        /* Global styles */
+        .button {
+            background-color: blue;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>CSS Leakage with Real Web Component</h1>
+
+    <!-- Global button using global styles -->
+    <button class="button">Global Button</button>
+
+    <!-- Our custom web component -->
+    <my-component></my-component>
+
+    <!-- Another global button to demonstrate leakage -->
+    <button class="button">Another Global Button</button>
+
+    <script>
+        // Define the custom element
+        class MyComponent extends HTMLElement {
+            constructor() {
+                super();
+                
+                // Create the component's HTML structure
+                this.innerHTML = `
+                    <style>
+                        /* Component-specific styles */
+                        .button {
+                            background-color: red;
+                            color: black;
+                            padding: 5px 10px;
+                            border: 2px solid black;
+                        }
+                    </style>
+                    <button class="button">Component Button</button>
+                `;
+            }
+        }
+
+        // Register the custom element
+        customElements.define('my-component', MyComponent);
+
+        /*
+        Problem Demonstration:
+        1. The first "Global Button" uses the global blue style.
+        2. The "Component Button" inside <my-component> uses the red style defined within the component.
+        3. The "Another Global Button" after the component is affected by the component's styles,
+           turning red instead of blue. This demonstrates CSS leakage from the component to the global scope.
+
+        Without Shadow DOM encapsulation, the styles defined inside the custom element
+        leak into the global scope and affect elements outside the component.
+        */
+    </script>
+</body>
+</html>

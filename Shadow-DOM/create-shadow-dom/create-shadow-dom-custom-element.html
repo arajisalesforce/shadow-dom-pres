@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Shadow DOM +  Concepts Demonstration</title>
+    <style>
+        /* Global styles - these will NOT affect the component's internal elements */
+        .card {
+            border: 5px solid red;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1> Create Shadow DOM +  Concepts Demonstration</h1>
+
+    <!-- This div will demonstrate that global styles don't affect the component -->
+    <div class="card">
+        <h2>Global Card</h2>
+        <p>This card uses global styles.</p>
+    </div>
+
+    <!-- This is our custom element that will host a Shadow DOM -->
+    <user-card name="John Doe"></user-card>
+
+    <script>
+        class UserCard extends HTMLElement {
+            constructor() {
+                super();
+                
+                // Create a Shadow Root
+                // This is where we create and attach the Shadow DOM to our custom element
+                const shadow = this.attachShadow({mode: 'open'});
+
+                // Create the Shadow Tree
+                const wrapper = document.createElement('div');
+                wrapper.setAttribute('class', 'card');
+
+                const name = document.createElement('h2');
+                name.textContent = this.getAttribute('name');
+
+                // Encapsulated styles for the Shadow DOM
+                const style = document.createElement('style');
+                style.textContent = `
+                    .card {
+                        border: 1px solid #ddd;
+                        border-radius: 4px;
+                        padding: 10px;
+                        width: 200px;
+                        font-family: Arial, sans-serif;
+                        margin-top: 10px;
+                    }
+                    h2 {
+                        margin: 10px 0;
+                        color: #333;
+                    }
+                `;
+
+                // Append elements to the Shadow Tree
+                shadow.appendChild(style);
+                wrapper.appendChild(name);
+                shadow.appendChild(wrapper);
+            }
+        }
+
+        // Register the custom element
+        customElements.define('user-card', UserCard);
+
+        /*
+        Shadow DOM Concepts Demonstrated:
+
+        1. Shadow Host:
+           The <user-card> element is the Shadow Host. It's a regular DOM node that hosts 
+           a Shadow DOM. You can see it used in the HTML as <user-card name="John Doe" ...>.
+
+        2. Shadow Root:
+           Created by this.attachShadow({mode: 'open'}) in the constructor. This is the 
+           root node of the Shadow DOM tree, separating the component's internal DOM from 
+           the main document's DOM.
+
+        3. Shadow Boundary:
+           This is the line of separation between the Light DOM (the regular DOM of the main 
+           document) and the Shadow DOM. It's not a physical line in the code, but a conceptual 
+           boundary. You can observe its effects:
+           - The global .card style doesn't affect the component's internal .card div.
+           - The component's internal styles don't leak out to affect the global .card div.
+
+        4. Shadow Tree:
+           This is the entire DOM tree inside the Shadow DOM, including:
+           - The <style> element with encapsulated styles
+           - The wrapper <div> with class "card"
+           - The <h2> element for the name
+           All these elements are encapsulated within the Shadow DOM and not directly 
+           accessible from the main document's DOM.
+
+        Note how the Shadow DOM provides style encapsulation:
+        - The red border style for .card in the global scope doesn't affect the user-card component.
+        - The component's internal styles (like the border and font styles) don't affect the global .card div.
+        */
+    </script>
+</body>
+</html>

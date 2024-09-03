@@ -1,0 +1,53 @@
+<!-- File name: web_component_style_attribute.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Web Component - Style Attribute Example</title>
+</head>
+<body>
+    <h1>Web Component - Style Attribute Example</h1>
+
+    <flex-container></flex-container>
+
+    <script>
+        class FlexContainer extends HTMLElement {
+            constructor() {
+                super();
+                this.attachShadow({ mode: 'open' });
+                this.shadowRoot.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; padding: 10px; background-color: #f0f0f0;">
+                        <div style="min-width: 100px; background-color: #ff9999; padding: 10px;">Left</div>
+                        <div style="background-color: #99ff99; padding: 10px;">Center</div>
+                        <div style="min-width: 100px; background-color: #9999ff; padding: 10px;">Right</div>
+                    </div>
+                `;
+            }
+        }
+
+        customElements.define('flex-container', FlexContainer);
+
+        /*
+        This example demonstrates the use of style attributes in a Web Component:
+
+        1. Inline Styles:
+           - Styles are applied directly to elements using the style attribute
+           - This approach is useful for styles that are specific to individual elements
+
+        2. Flexibility:
+           - Easy to set dynamic styles or styles that might change based on component state
+
+        3. Simplicity:
+           - No need for separate style tags or selectors
+           - Useful for components with simple structures where scoped styles might be overkill
+
+        Key Points:
+        - Style attributes are good for straightforward, element-specific styling
+        - They can be more performant for simple components
+        - This approach can make the markup less readable if overused
+        - It's particularly useful for setting dimensional properties like width or height
+        */
+    </script>
+</body>
+</html>

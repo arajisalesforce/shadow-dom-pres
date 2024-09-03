@@ -1,0 +1,17 @@
+section {
+    background-color: white;
+    padding: 10px;
+}
+
+div {
+    color: blue;
+    font-weight: bold;
+}
+
+button {
+    background-color: #0070d2;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+}

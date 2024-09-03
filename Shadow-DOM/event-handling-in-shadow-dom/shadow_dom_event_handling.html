@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Event Handling in Shadow DOM</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; padding: 20px; }
+        .outer-container { border: 2px solid #333; padding: 20px; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Event Handling in Shadow DOM</h1>
+
+    <div class="outer-container">
+        <h2>Outer Container (Light DOM)</h2>
+        <p>Click anywhere in this container to test event bubbling.</p>
+        <custom-button></custom-button>
+    </div>
+
+    <div id="event-log"></div>
+
+    <script>
+        class CustomButton extends HTMLElement {
+            constructor() {
+                super();
+                this.attachShadow({ mode: 'open' });
+                this.shadowRoot.innerHTML = `
+                    <style>
+                        .custom-button { padding: 10px; margin: 5px; cursor: pointer; }
+                        .inner-container { border: 1px solid #666; padding: 10px; margin-top: 10px; }
+                    </style>
+                    <div class="inner-container">
+                        <h3>Custom Button (Shadow DOM)</h3>
+                        <button class="custom-button" id="normalButton">Normal Button</button>
+                        <button class="custom-button" id="stopPropButton">Stop Propagation Button</button>
+                    </div>
+                `;
+
+                this.normalButton = this.shadowRoot.getElementById('normalButton');
+                this.stopPropButton = this.shadowRoot.getElementById('stopPropButton');
+
+                // Event listener inside Shadow DOM
+                this.normalButton.addEventListener('click', this.handleNormalClick.bind(this));
+                this.stopPropButton.addEventListener('click', this.handleStopPropClick.bind(this));
+
+                // Event listener on the shadow host
+                this.addEventListener('click', this.handleHostClick.bind(this));
+            }
+
+            handleNormalClick(e) {
+                this.logEvent('Normal Button Clicked (Shadow DOM)', e);
+            }
+
+            handleStopPropClick(e) {
+                this.logEvent('Stop Propagation Button Clicked (Shadow DOM)', e);
+                e.stopPropagation(); // Stop the event from bubbling up
+            }
+
+            handleHostClick(e) {
+                this.logEvent('Custom Button Host Clicked (Light DOM)', e);
+            }
+
+            logEvent(message, e) {
+                const log = document.getElementById('event-log');
+                const entry = document.createElement('p');
+                entry.textContent = `${message} - target: ${e.target.tagName}`;
+                log.appendChild(entry);
+                console.log(message, e);
+            }
+        }
+
+        customElements.define('custom-button', CustomButton);
+
+        // Event listener in the light DOM
+        document.querySelector('.outer-container').addEventListener('click', (e) => {
+            const log = document.getElementById('event-log');
+            const entry = document.createElement('p');
+            entry.textContent = `Outer Container Clicked (Light DOM) - target: ${e.target.tagName}`;
+            log.appendChild(entry);
+            console.log('Outer Container Clicked', e);
+        });
+
+        /*
+        This example demonstrates various aspects of event handling with Shadow DOM:
+
+        1. Event Bubbling:
+           - Clicks on the "Normal Button" bubble up through the Shadow DOM boundary to the light DOM.
+           - You can observe this by clicking the button and seeing events logged for both Shadow and Light DOM.
+
+        2. Stopping Propagation:
+           - The "Stop Propagation Button" prevents the click event from bubbling beyond the Shadow DOM.
+           - Clicking this button will only log events within the Shadow DOM.
+
+        3. Shadow Host Events:
+           - The custom-button element (Shadow Host) has its own click event listener.
+           - This demonstrates how events on the host element can be handled separately.
+
+        4. Light DOM Events:
+           - The outer container in the Light DOM has a click event listener.
+           - This shows how events bubble up to parent elements in the Light DOM.
+
+        Key Points:
+        - Events can cross the Shadow DOM boundary (unless stopped).
+        - event.target always refers to the actual element clicked, even across Shadow DOM boundaries.
+        - event.currentTarget helps identify where the current listener is attached.
+        - stopPropagation() can be used to contain events within the Shadow DOM.
+        - Shadow hosts can have their own event listeners, separate from their Shadow DOM content.
+        */
+    </script>
+</body>
+</html>

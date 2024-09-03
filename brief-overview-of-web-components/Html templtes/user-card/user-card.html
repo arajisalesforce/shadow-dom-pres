@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Template Example</title>
+</head>
+<body>
+    <h1>User Cards</h1>
+
+    <!-- Define the template for our user cards -->
+    <template id="user-card-template">
+        <style>
+            /* Styles for the card are encapsulated within the template */
+            .card { border: 1px solid #ccc; padding: 10px; margin: 10px 0; }
+        </style>
+        <div class="card">
+            <h2></h2>
+            <p></p>
+        </div>
+    </template>
+
+    <!-- This div will contain our generated user cards -->
+    <div id="user-container"></div>
+
+    <script>
+        // Get references to our template and container
+        const template = document.getElementById('user-card-template');
+        const container = document.getElementById('user-container');
+
+        // Sample user data
+        const users = [
+            { name: 'Alice', email: 'alice@example.com' },
+            { name: 'Bob', email: 'bob@example.com' }
+        ];
+
+        // For each user, create a card using the template
+        users.forEach(user => {
+            // Clone the template content
+            const card = template.content.cloneNode(true);
+            
+            // Populate the card with user data
+            card.querySelector('h2').textContent = user.name;
+            card.querySelector('p').textContent = user.email;
+            
+            // Add the populated card to the container
+            container.appendChild(card);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<template id="my-button-template">
+    <style>
+      button { background-color: blue; color: white; }
+    </style>
+    <button><slot></slot></button>
+</template>
+  
+  <script>
+  class MyButton extends HTMLElement {
+    constructor() {
+      super();
+      const template = document.getElementById('my-button-template');
+      const templateContent = template.content.cloneNode(true);
+      //attach shadow dom
+      this.attachShadow({ mode: 'open' }).appendChild(templateContent);
+    }
+  
+    connectedCallback() {
+      this.shadowRoot.querySelector('button').addEventListener('click', () => {
+        alert('Custom button clicked!');
+      });
+    }
+  }
+  
+  customElements.define('my-button', MyButton);
+  </script>
+  
+  <my-button>Click me!</my-button>
+
+
+<!--
+  if you don't use teh shadow dom 
+ <template id="my-button-template">
+    <button>
+      <slot></slot>
+    </button>
+  </template>
+  
+  <style>
+    my-button button {
+      background-color: blue;
+      color: white;
+    }
+  </style>
+  
+  <script>
+  class MyButton extends HTMLElement {
+    constructor() {
+      super();
+      const template = document.getElementById('my-button-template');
+      const templateContent = template.content.cloneNode(true);
+      this.appendChild(templateContent);
+    }
+  
+    connectedCallback() {
+      this.querySelector('button').addEventListener('click', () => {
+        alert('Custom button clicked!');
+      });
+    }
+  }
+  
+  customElements.define('my-button', MyButton);
+  </script>
+  
+  <my-button>Click me!</my-button>
+-->

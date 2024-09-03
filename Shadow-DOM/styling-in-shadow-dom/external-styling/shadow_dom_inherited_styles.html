@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Shadow DOM - Inherited Styles Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            background-color: #f0f0f0;
+            padding: 20px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Shadow DOM - Inherited Styles Example</h1>
+
+    <div class="container">
+        <p>This is in the light DOM.</p>
+        <custom-element></custom-element>
+    </div>
+
+    <script>
+        class CustomElement extends HTMLElement {
+            constructor() {
+                super();
+                const shadow = this.attachShadow({mode: 'open'});
+                shadow.innerHTML = `
+                    <style>
+                        /* Styles specific to the shadow DOM */
+                        p {
+                            border: 1px solid #999;
+                            padding: 10px;
+                        }
+                    </style>
+                    <p>This is inside the shadow DOM.</p>
+                    <p style="color: blue;">This overrides the inherited color.</p>
+                `;
+            }
+        }
+
+        customElements.define('custom-element', CustomElement);
+
+        /*
+        This example demonstrates inherited styles in Shadow DOM:
+
+        1. Inherited Styles:
+           - font-family: Inherited from body
+           - color: Inherited from body (except where overridden)
+           - line-height: Inherited from body
+           - font-size: Inherited from .container
+
+        2. Non-inherited Styles:
+           - background-color: Not inherited, doesn't apply to shadow DOM
+           - padding: Not inherited, doesn't apply to shadow DOM
+
+        3. Shadow-specific Styles:
+           - border and padding on <p>: Applied only within shadow DOM
+
+        Key Points:
+        - Inheritable properties (like font properties, color, line-height) automatically apply to shadow DOM.
+        - Non-inheritable properties (like background-color, padding) do not penetrate shadow DOM.
+        - Styles can be overridden within the shadow DOM (as seen with the blue text).
+        - This behavior allows for some global styling while maintaining encapsulation.
+        */
+    </script>
+</body>
+</html>

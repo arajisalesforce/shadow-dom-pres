@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Open vs Closed Shadow DOM Example</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; }
+        .container { margin: 20px; padding: 20px; border: 1px solid #ddd; }
+    </style>
+</head>
+<body>
+    <h1>Open vs Closed Shadow DOM Example</h1>
+
+    <div class="container">
+        <h2>Open Shadow DOM</h2>
+        <open-shadow-element></open-shadow-element>
+        <button onclick="interactWithOpenShadow()">Interact with Open Shadow</button>
+    </div>
+
+    <div class="container">
+        <h2>Closed Shadow DOM</h2>
+        <closed-shadow-element></closed-shadow-element>
+        <button onclick="interactWithClosedShadow()">Interact with Closed Shadow</button>
+    </div>
+
+    <script>
+        // Open Shadow DOM Element
+        class OpenShadowElement extends HTMLElement {
+            constructor() {
+                super();
+                const shadow = this.attachShadow({mode: 'open'});
+                shadow.innerHTML = `
+                    <style>
+                        p { color: blue; }
+                        button { background-color: lightblue; }
+                    </style>
+                    <p>This is inside an open shadow DOM</p>
+                    <button id="openButton">Click me (Open)</button>
+                `;
+                
+                shadow.getElementById('openButton').addEventListener('click', () => {
+                    alert('Button in open shadow DOM clicked!');
+                });
+            }
+        }
+
+        // Closed Shadow DOM Element
+        class ClosedShadowElement extends HTMLElement {
+            constructor() {
+                super();
+                const shadow = this.attachShadow({mode: 'closed'});
+                shadow.innerHTML = `
+                    <style>
+                        p { color: green; }
+                        button { background-color: lightgreen; }
+                    </style>
+                    <p>This is inside a closed shadow DOM</p>
+                    <button id="closedButton">Click me (Closed)</button>
+                `;
+                
+                shadow.getElementById('closedButton').addEventListener('click', () => {
+                    alert('Button in closed shadow DOM clicked!');
+                });
+            }
+        }
+
+        customElements.define('open-shadow-element', OpenShadowElement);
+        customElements.define('closed-shadow-element', ClosedShadowElement);
+
+        // Function to interact with Open Shadow DOM
+        function interactWithOpenShadow() {
+            const openElement = document.querySelector('open-shadow-element');
+            if (openElement.shadowRoot) {
+                const p = openElement.shadowRoot.querySelector('p');
+                p.textContent = 'Open shadow DOM content changed from outside!';
+                console.log('Successfully modified open shadow DOM');
+            } else {
+                console.log('Could not access open shadow DOM (this should not happen)');
+            }
+        }
+
+        // Function to interact with Closed Shadow DOM
+        function interactWithClosedShadow() {
+            const closedElement = document.querySelector('closed-shadow-element');
+            if (closedElement.shadowRoot) {
+                console.log('Accessed closed shadow DOM (this should not happen)');
+            } else {
+                console.log('Could not access closed shadow DOM (this is expected behavior)');
+                alert('Cannot modify closed shadow DOM content');
+            }
+        }
+
+        /*
+        This example demonstrates the differences between Open and Closed Shadow DOM:
+
+        1. Open Shadow DOM (open-shadow-element):
+           - Created with {mode: 'open'}
+           - shadowRoot is accessible from outside the element
+           - External scripts can modify its content
+
+        2. Closed Shadow DOM (closed-shadow-element):
+           - Created with {mode: 'closed'}
+           - shadowRoot returns null when accessed from outside
+           - External scripts cannot directly modify its content
+
+        Key points:
+        - Both types encapsulate styles and structure.
+        - Open shadow DOM allows external access and modification.
+        - Closed shadow DOM provides stronger encapsulation, preventing external access.
+        - The mode choice depends on whether you want to allow external manipulation of the shadow DOM.
+        */
+    </script>
+</body>
+</html>

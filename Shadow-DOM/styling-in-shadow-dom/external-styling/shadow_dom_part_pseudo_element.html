@@ -1,0 +1,94 @@
+<!-- File name: shadow_dom_part_pseudo_element.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Shadow DOM - ::part Pseudo-element Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        /* Styling parts from the light DOM */
+        custom-card::part(title) {
+            color: #0066cc;
+            font-size: 24px;
+        }
+        custom-card::part(content) {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Shadow DOM - ::part Pseudo-element Example</h1>
+
+    <custom-card>
+        <h2 slot="title">My Custom Card</h2>
+        <p slot="content">This is the content of my custom card.</p>
+    </custom-card>
+
+    <script>
+        class CustomCard extends HTMLElement {
+            constructor() {
+                super();
+                const shadow = this.attachShadow({mode: 'open'});
+                shadow.innerHTML = `
+                    <style>
+                        .card {
+                            border: 1px solid #ddd;
+                            border-radius: 8px;
+                            overflow: hidden;
+                        }
+                        .card-title {
+                            margin: 0;
+                            padding: 10px;
+                        }
+                        .card-content {
+                            padding: 10px;
+                        }
+                    </style>
+                    <div class="card">
+                        <h2 class="card-title" part="title">
+                            <slot name="title"></slot>
+                        </h2>
+                        <div class="card-content" part="content">
+                            <slot name="content"></slot>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        customElements.define('custom-card', CustomCard);
+
+        /*
+        This example demonstrates the use of the ::part pseudo-element with Shadow DOM:
+
+        1. Exposing Parts:
+           - The <h2> element in the shadow DOM is exposed with part="title"
+           - The content <div> is exposed with part="content"
+
+        2. Styling from Light DOM:
+           - custom-card::part(title) styles the title from outside the shadow DOM
+           - custom-card::part(content) styles the content area
+
+        3. Layering Styles:
+           - The shadow DOM provides basic structural styles (border, padding)
+           - The light DOM styles (color, font-size, background-color) are applied on top
+
+        4. Maintaining Encapsulation:
+           - Only elements with the 'part' attribute can be styled from outside
+           - Other elements and styles in the shadow DOM remain encapsulated
+
+        Key Points:
+        - The ::part pseudo-element allows for precise external styling of shadow DOM elements
+        - It provides a balance between encapsulation and customization
+        - This method is useful for creating themeable components while maintaining structure
+        */
+    </script>
+</body>
+</html>

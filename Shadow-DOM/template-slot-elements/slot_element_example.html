@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Slot Element Example</title>
+    <style>
+        custom-card {
+            display: block;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Slot Element Example</h1>
+
+    <custom-card>
+        <h2 slot="title">Welcome to My Card</h2>
+        <p slot="content">This is the main content of the card.</p>
+        <span slot="footer">Card footer</span>
+    </custom-card>
+
+    <custom-card>
+        <h2 slot="title">Another Card</h2>
+        <p slot="content">This card has different content.</p>
+        <button slot="footer">Click me</button>
+    </custom-card>
+    
+    <custom-card>
+    </custom-card>
+
+    <script>
+        class CustomCard extends HTMLElement {
+            constructor() {
+                super();
+                this.attachShadow({ mode: 'open' });
+                this.shadowRoot.innerHTML = `
+                    <style>
+                        .card-title { color: blue; }
+                        .card-content { font-style: italic; }
+                        .card-footer { font-size: 0.8em; color: gray; }
+                    </style>
+                    <div class="card">
+                        <div class="card-title">
+                            <slot name="title">Default Title</slot>
+                        </div>
+                        <div class="card-content">
+                            <slot name="content">Default content</slot>
+                        </div>
+                        <div class="card-footer">
+                            <slot name="footer">Default footer</slot>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        customElements.define('custom-card', CustomCard);
+
+        /*
+        This example demonstrates the use of the <slot> element:
+
+        1. We define a custom element <custom-card> with a shadow DOM.
+        2. The shadow DOM contains named slots for title, content, and footer.
+        3. We use the custom element in HTML, providing content for each slot.
+        4. The content provided in the light DOM is inserted into the corresponding slots in the shadow DOM.
+
+        Key points:
+        - Slots allow content from the light DOM to be inserted into specific places in the shadow DOM.
+        - Named slots (e.g., slot="title") correspond to <slot name="title"> in the shadow DOM.
+        - Slots provide a way to create flexible, composable components.
+        - Content can be easily customized for each instance of the component.
+        - Default content can be provided inside the slot tags in the shadow DOM.
+        */
+    </script>
+</body>
+</html>
